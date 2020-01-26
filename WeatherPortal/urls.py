@@ -16,14 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
-from rest_framework_swagger.views import get_swagger_view
+# from rest_framework_swagger.views import get_swagger_view
 
-schema_view = get_swagger_view(title='Weather Portal API')
+# schema_view = get_swagger_view(title='Weather Portal API')
 
 urlpatterns = [
     path('', include('ui.urls')),
     path('admin/', admin.site.urls),
-    path('api/doc/', schema_view),
+    # path('api/doc/', schema_view),
     path('api/v1/', include('api.urls')),
     # path('favicon.ico', RedirectView.as_view(url='/static/images/favicon.ico'), name='favicon'),
     
