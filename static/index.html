@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wheather</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/jquery.easy-autocomplete.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/easy-autocomplete.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/easy-autocomplete.themes.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <style>
+        input[type=submit] {
+            width: 300px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 60px;
+            margin: 8px 0px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        div {
+            border-radius: 5px;
+            padding: 20px;
+        }
+        tr {
+            padding: 30px;
+            margin: 25px;
+        }
+        td {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body style="height: 100%; background-color: #c5c5c5; align-self: center;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light"  style="font-size: 25px; height: 70px; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; padding-left: 50px;">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="/">Wheather Portal <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/history">History </a>
+                    </li>
+                  </ul>
+                </div>
+              </nav>
+    <div id='app'>
+        <div style="align-items: center;">
+                <table>   
+                    <tr><td><input id="cities" value="" placeholder="City..." required/></td>
+                    <td><input type="submit" value="Find" v-on:click="send()" style="padding-left: 20px;"></td>
+                    </tr>
+                    </table>
+        </div>
+        <span v-if="error">
+            {{error['data']}}
+        </span>
+        <span v-if="info" style="font-size: 20px;">
+            <h3>{{ city }}</h3><img v-bind:src="sky"><br>
+            <table>
+                <tr>
+                    <td>Temperature</td><td> {{ info['temp'].toFixed(1) }} &degC</td>
+                </tr>
+                <tr>
+                    <td>Wind</td><td> {{ info['wind_speed'] }}m/s, {{ info['wind_degree'] }}&deg </td>
+                </tr>
+                <tr>
+                    <td>Clouds</td><td> {{ info['clouds'] }}</td>
+                </tr>
+            </table>
+            <!-- <img src="https://cdn2.iconfinder.com/data/icons/unigrid-phantom-weather/60/027_020_wind_direction_breeze_weather-512.png"
+            :style="wind_degree"> -->
+        </span>
+    </center>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                city: '',
+                info: '',
+                error: null,
+                sky: null,
+                sky_ico: {
+                    'clear': 'http://openweathermap.org/img/wn/01d@2x.png',
+                    'few clouds': 'http://openweathermap.org/img/wn/02d@2x.png',
+                    'scattered clouds': 'http://openweathermap.org/img/wn/03d@2x.png',
+                    'clouds' : 'http://openweathermap.org/img/wn/03d@2x.png',
+                    'broken clouds': 'http://openweathermap.org/img/wn/04d@2x.png',
+                    'shower rain' : 'http://openweathermap.org/img/wn/09d@2x.png',
+                    'rain' : 'http://openweathermap.org/img/wn/10d@2x.png',
+                    'thunderstorm': 'http://openweathermap.org/img/wn/11d@2x.png',
+                    'snow' : 'http://openweathermap.org/img/wn/13d@2x.png',
+                    'mist' : 'http://openweathermap.org/img/wn/50d@2x.png'
+                },
+                wind_degree: 2,
+            },
+            methods: {
+                send: function() {
+                    this.info = ''
+                    this.error = ''
+                    city = document.getElementById('cities').value
+                    if (!city) { 
+                        this.error = "Data don't entered"
+                        return
+                    }
+                    this.city = city
+                    axios
+                        .get(`api/v1/getWeather/${city}`)
+                        .then((response) => { 
+                            this.info = response['data']
+                            this.wind_degree =  this.info['wind_degree']
+
+                            console.log(this.info)
+                            this.sky = this.sky_ico[this.info['sky'].toLowerCase()]
+                        })
+                        .catch(error => { this.error = error.response });
+                    console.log(this.error)
+                }
+            }
+        })
+        var options = {
+            url: function (params) {
+                // console.log(params)
+                return "/api/v1/cities/"
+            },
+            getValue: function(element) {
+                return `${ element.name }, ${ element.country }`
+            },
+            list: {
+                match: {
+                enabled: true
+                },
+                showAnimation: {
+                    type: "fade"
+                },
+                hideAnimation: {
+                    type: "fade"
+                }
+            },
+            theme: "round"
+        };
+
+        $("#cities").easyAutocomplete(options);
+    </script>
+</body>
+</html>
