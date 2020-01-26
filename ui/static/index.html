@@ -129,8 +129,9 @@
         })
         var options = {
             url: function (params) {
-                // console.log(params)
-                return "/api/v1/cities/"
+                let s = params[0].toLowerCase()
+                // console.log(s)
+                return `/api/v1/cities/${s}`
             },
             getValue: function(element) {
                 return `${ element.name }, ${ element.country }`

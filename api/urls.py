@@ -6,5 +6,5 @@ urlpatterns = [
     path('', views.index),
     path('getWeather/<str:city>', views.getWeatherInCity),
     path('getStoredData', views.getStoredWheatherData),
-    path('cities/', views.getCities)
+    path('cities/<str:symbol>', views.getCities)
 ]

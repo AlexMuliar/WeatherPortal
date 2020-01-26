@@ -58,6 +58,7 @@ def getStoredWheatherData(request):
 
 
 @csrf_exempt
-def getCities(request):
-    return HttpResponse(open('db/cities.json').read())
+def getCities(request, symbol):
+    print(symbol.lower())
+    return HttpResponse(open(f'db/cities/{ symbol.lower() }.json').read())
     

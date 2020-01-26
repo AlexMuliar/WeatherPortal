@@ -130,7 +130,7 @@
         var options = {
             url: function (params) {
                 // console.log(params)
-                return "/api/v1/cities/"
+                return `"/api/v1/cities/${params[0]}"`
             },
             getValue: function(element) {
                 return `${ element.name }, ${ element.country }`
