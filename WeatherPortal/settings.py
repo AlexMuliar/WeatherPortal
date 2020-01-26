@@ -29,7 +29,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '192.168.0.110',
-    'localhost'
+    'localhost',
+    'pure-woodland-74559.herokuapp.com'
 ]
 
 
