@@ -111,3 +111,5 @@ class Weather(object):
             conn.commit()
             return cursor.lastrowid
 
+
+

@@ -4,12 +4,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .apps import ApiConfig
 from .models import Weather
-from .utils import transform_data_to_my_format
+from .utils import transform_data_to_my_format, CityStorage
 
 import requests
 import json
 import datetime
 
+cities = CityStorage()
 
 @csrf_exempt
 def index(request):
@@ -58,7 +59,8 @@ def getStoredWheatherData(request):
 
 
 @csrf_exempt
-def getCities(request, symbol):
-    print(symbol.lower())
-    return HttpResponse(open(f'db/cities/{ symbol.lower() }.json').read())
+def getCities(request, symbols):
+    print(symbols.lower())
+    data = json.dumps(cities.get_cities_on_char(symbols))
+    return HttpResponse(data)
     

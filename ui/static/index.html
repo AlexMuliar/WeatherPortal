@@ -129,7 +129,7 @@
         })
         var options = {
             url: function (params) {
-                let s = params[0].toLowerCase()
+                let s = params.slice(0, 2).toLowerCase()
                 // console.log(s)
                 return `/api/v1/cities/${s}`
             },

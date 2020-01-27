@@ -1,5 +1,5 @@
 
-
+import json
 
 def transform_data_to_my_format(raw_data):
     transformed_data = dict()
@@ -18,3 +18,26 @@ def transform_data_to_my_format(raw_data):
     
 
     return transformed_data
+
+
+class CityStorage:
+    def __init__(self):
+        df = json.loads(open('db/cities.json').read())
+        l_arr = 'qwertyuiopasdfghjklzxcvbnm'
+        groups = dict()
+        for l in l_arr:
+            groups[l] = list()
+            for k in l_arr:
+                groups[l+k] = list()
+                
+        for item in df:
+            if item['name'] and item['name'][0].lower() in l_arr:
+                groups[item['name'][0].lower()].append(item)
+            if item['name'] and item['name'][0].lower() in l_arr and len(item['name']) > 1 and item['name'][1].lower() in l_arr:
+                groups[item['name'][0:2].lower()].append(item)
+            
+        self.cities = groups
+
+    
+    def get_cities_on_char(self, c):
+        return self.cities[c[:2]]
